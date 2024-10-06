@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desviar dos Planetas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            background: radial-gradient(circle, #111, #000);
+            display: block;
+            margin: 0 auto;
+            border: 4px solid #fff;
+            box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+        }
+        #score {
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="score">Pontos: 0</div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 400;
+        canvas.height = 600;
+
+        let score = 0;
+        let gameOver = false;
+
+        const spaceship = {
+            x: canvas.width / 2 - 25,
+            y: canvas.height - 60,
+            width: 50,
+            height: 50,
+            color: '#0ff',
+            speed: 5,
+        };
+
+        const planets = [];
+        const planetColors = ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffff00'];
+
+        function drawSpaceship() {
+            ctx.fillStyle = spaceship.color;
+            ctx.fillRect(spaceship.x, spaceship.y, spaceship.width, spaceship.height);
+        }
+
+        function createPlanet() {
+            const size = Math.random() * 40 + 20;
+            const x = Math.random() * (canvas.width - size);
+            const color = planetColors[Math.floor(Math.random() * planetColors.length)];
+            planets.push({ x, y: -size, size, color });
+        }
+
+        function drawPlanets() {
+            planets.forEach((planet, index) => {
+                planet.y += 3 + score * 0.05; // Aumenta a velocidade com o tempo
+                ctx.fillStyle = planet.color;
+                ctx.beginPath();
+                ctx.arc(planet.x + planet.size / 2, planet.y + planet.size / 2, planet.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Remove planeta quando sai da tela
+                if (planet.y > canvas.height) {
+                    planets.splice(index, 1);
+                    score++;
+                }
+
+                // Verifica colisão
+                if (spaceship.x < planet.x + planet.size &&
+                    spaceship.x + spaceship.width > planet.x &&
+                    spaceship.y < planet.y + planet.size &&
+                    spaceship.height + spaceship.y > planet.y) {
+                    gameOver = true;
+                }
+            });
+        }
+
+        function gameLoop() {
+            if (gameOver) {
+                ctx.fillStyle = 'red';
+                ctx.font = '48px Arial';
+                ctx.fillText('Game Over', 50, canvas.height / 2);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSpaceship();
+            drawPlanets();
+
+            document.getElementById('score').textContent = `Pontos: ${score}`;
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function moveSpaceship(event) {
+            if (event.key === 'ArrowLeft' && spaceship.x > 0) {
+                spaceship.x -= spaceship.speed;
+            }
+            if (event.key === 'ArrowRight' && spaceship.x < canvas.width - spaceship.width) {
+                spaceship.x += spaceship.speed;
+            }
+        }
+
+        document.addEventListener('keydown', moveSpaceship);
+        setInterval(createPlanet, 1000); // Cria um planeta a cada segundo
+        gameLoop();
+    </script>
+</body>
+</html>
