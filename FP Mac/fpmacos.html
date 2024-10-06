@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carteira Digital</title>
+    <style>
+        /* Definindo estilos globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            color: white;
+        }
+
+        /* Container principal */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 300px;
+        }
+
+        /* Título */
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        /* Seção de saldo */
+        .saldo h2 {
+            margin-bottom: 20px;
+        }
+
+        /* Estilizando os inputs e botões */
+        .actions input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .actions button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #66a6ff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background-color: #89f7fe;
+        }
+
+        /* Histórico de transações */
+        #historico {
+            margin-top: 20px;
+        }
+
+        #historico ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #historico li {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lud Cash </h1>
+        <div class="saldo">
+            <h2>Saldo Atual: <span id="saldo">R$ 0,00</span></h2>
+        </div>
+        
+        <div class="actions">
+            <input type="text" id="descricao" placeholder="Digite a descrição" />
+            <input type="number" id="valor" placeholder="Digite o valor" />
+            <button onclick="adicionar()">Adicionar</button>
+        </div>
+        
+        <div id="historico">
+            <h3>Histórico de Transações:</h3>
+            <ul id="transacoes"></ul>
+        </div>
+    </div>
+
+    <script>
+        let saldoAtual = 0;  // Variável que guarda o saldo atual
+
+        // Função para adicionar valor ao saldo
+        function adicionar() {
+            let descricao = document.getElementById("descricao").value;
+            let valor = parseFloat(document.getElementById("valor").value);
+
+            if (descricao === '' || isNaN(valor) || valor <= 0) {
+                alert("Por favor, insira uma descrição e um valor válido.");
+                return;
+            }
+
+            saldoAtual += valor;
+            atualizarSaldo();
+            adicionarTransacao(descricao, valor);
+            limparCampos();
+        }
+
+        // Atualiza o saldo exibido na tela
+        function atualizarSaldo() {
+            document.getElementById("saldo").textContent = `R$ ${saldoAtual.toFixed(2)}`;
+        }
+
+        // Adiciona uma transação ao histórico
+        function adicionarTransacao(descricao, valor) {
+            let transacao = document.createElement("li");
+            transacao.textContent = `${descricao}: R$ ${valor.toFixed(2)}`;
+            document.getElementById("transacoes").appendChild(transacao);
+        }
+
+        // Limpa os campos de entrada
+        function limparCampos() {
+            document.getElementById("descricao").value = '';
+            document.getElementById("valor").value = '';
+        }
+    </script>
+</body>
+</html>
