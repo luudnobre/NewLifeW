@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Finanças Pessoais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .summary {
+            margin-top: 20px;
+        }
+        .summary p {
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerenciador de Finanças</h1>
+        <div class="form-group">
+            <label for="income">Renda Mensal (R$):</label>
+            <input type="number" id="income" placeholder="Digite sua renda">
+        </div>
+        <div class="form-group">
+            <label for="expense">Despesa (R$):</label>
+            <input type="number" id="expense" placeholder="Digite uma despesa">
+        </div>
+        <button id="addExpense">Adicionar Despesa</button>
+        <div class="summary">
+            <p><strong>Saldo Atual:</strong> R$ <span id="balance">0</span></p>
+            <p><strong>Total de Despesas:</strong> R$ <span id="totalExpenses">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        const incomeInput = document.getElementById('income');
+        const expenseInput = document.getElementById('expense');
+        const addExpenseButton = document.getElementById('addExpense');
+        const balanceDisplay = document.getElementById('balance');
+        const totalExpensesDisplay = document.getElementById('totalExpenses');
+
+        let balance = 0;
+        let totalExpenses = 0;
+
+        addExpenseButton.addEventListener('click', () => {
+            const income = parseFloat(incomeInput.value) || 0;
+            const expense = parseFloat(expenseInput.value) || 0;
+
+            if (income > 0 && balance === 0) {
+                balance = income;
+            }
+
+            if (expense > 0) {
+                totalExpenses += expense;
+                balance -= expense;
+            }
+
+            balanceDisplay.textContent = balance.toFixed(2);
+            totalExpensesDisplay.textContent = totalExpenses.toFixed(2);
+
+            expenseInput.value = '';
+        });
+    </script>
+</body>
+</html>
